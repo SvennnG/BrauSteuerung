@@ -47,7 +47,8 @@ class LCDGraphic(threading.Thread):
         Start = 0
         Profiles = 1
         Settings = 2
-        Reset = 3
+        Shutdown = 3
+        Reset = 4
             
     def __init__(self, lcd="virtual"):
         threading.Thread.__init__(self)
@@ -68,7 +69,7 @@ class LCDGraphic(threading.Thread):
         
         # funktion um den heater abzufragen. muss in run.py gesetzt werden
         self.heaterStatus  = lambda: "?"
-        
+                    
         # unterschiedliche einstellungen nutzen diesen wert der in der main in die konfigurationen uebertragen wird
         self.value = 0.0 
         
@@ -85,6 +86,9 @@ class LCDGraphic(threading.Thread):
         # global config
         self.globalconfig = [["Proportionalbereich.neg",0],["Proportionalbereich.pos",0]]
         self.globalconfigSavecall = lambda: print(" --- save function global conf not yet set! --- ")
+        
+        # set by self.shutown / called by mainmenu "Beenden"
+        self.wantsToExit = False
         
         # timer fuer zu lange display namen der Profile
         self.profileScrollTimer = 0.0
@@ -128,6 +132,9 @@ class LCDGraphic(threading.Thread):
             self.ack_ok()
         elif status < 0:
             self.ack_error()
+            
+    def shutdown(self):
+        self.wantsToExit = True
             
     def initLCD(self):
 
@@ -334,7 +341,7 @@ class LCDGraphic(threading.Thread):
     
     def setGetFkt(self, call_fkt):
         self.call_fkt_get = call_fkt
-    
+            
     # Aus dem aktuellen Profil eine Einstellung abrufen (z.b. ID 0 für den Namen)
     # falls sinnlos wird das backlight in ack_error() rot aufleuchten
     def getSett(self, settID = -1):
@@ -359,7 +366,7 @@ class LCDGraphic(threading.Thread):
         
         self.lcd.setCursor(0,1)
         self.lcd.message("\x03 ") # updown pfeil
-        items = ( "Beginnen\x04     ","ProfilesSett.\x04", "Einstellungen\x04", "Reset\x04        ")
+        items = ( "Beginnen\x04     ","ProfilesSett.\x04", "Einstellungen\x04", "Beenden\x04      ", "Reset\x04        ")
         self.lcd.message(items[self.mainMenuSelect.value])
         
         if self.isLeftButtonPressed():
@@ -372,6 +379,11 @@ class LCDGraphic(threading.Thread):
                 self.profileScrollCounter = 0
                 self.profileScrollTimer = self.current_milli_time() + PROFILESCROLLTIMERINIT
                 print ("start selected. to profile select 2")
+            if self.mainMenuSelect == self.mainMenuItems.Shutdown:
+                self.profileScrollCounter = 0
+                self.profileScrollTimer = self.current_milli_time() + PROFILESCROLLTIMERINIT
+                self.shutdown()
+                print ("SHUTDOWN")
             elif self.mainMenuSelect == self.mainMenuItems.Profiles:
                 self.state = self.States.ProfileSelect
                 self.profileScrollCounter = 0

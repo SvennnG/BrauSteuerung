@@ -1,17 +1,17 @@
 #!/usr/bin/python     
 
 #from datetime import datetime
-import sys, logging, time
+import sys, logging, time, os
 import TempGetter.TempGetter as TempGetter
 import LCDDriver.LCDGraphic as LCDGraphic
 import Configuration.ConfManager as ConfManager
 import console.Console as Console
 import Heater.Heater as Heater
 
-try:
-    import console.graph as Graph
-except:
-    print("Graph module could not be loaded!")
+#~ try:
+    #~ import console.graph as Graph
+#~ except Exception as ex:
+    #~ print("Graph module could not be loaded!", ex)
     
 from optparse import OptionParser
 import locale
@@ -105,7 +105,7 @@ try:
 except Exception as ex:
     print("TempGetter init failed! cannot run! Exit", ex)
 if tempGetter == 0 or tempGetter2 == 0:
-    sys.exit(1)
+    sys.exit(4)
 
 #####################
 # Heater Init
@@ -130,6 +130,7 @@ try:
 except Exception as ex:
     print("Display init failed! cannot run! Exit", ex)
 if lcdGraphic == 0:
+    print("LCDGraphic is zero! EXIT!")
     exit(2)
 
 if options.graph:
@@ -138,6 +139,9 @@ if options.graph:
     except Exception as ex:
         print("Temperatur Graph init failed!", ex)
         options.graph = False
+            
+class LCDExitException(Exception):
+    pass
     
 #####################
 # Configuration Files Init
@@ -235,6 +239,9 @@ try:
         
         console.temp = tmp
         
+        if lcdGraphic.wantsToExit:
+            raise LCDExitException
+        
         # je 100ms update
         while int(round(time.time() * 1000)) < lastUpdate + 100:
             time.sleep(0.05)
@@ -267,8 +274,27 @@ except (KeyboardInterrupt, SystemExit):
     console.join()
     lcdGraphic.join()
     print("\nProgramm end.")
-    logger.info('Maischen Stoped.')
+    logger.info('Maischen Stoped. All Shut down...')
     sys.exit(6)
+    
+except LCDExitException:
+    if options.graph:
+        graph.running = False
+    tempGetter.running = False
+    tempGetter2.running = False
+    lcdGraphic.running = False
+    heater.adjust(0.0)
+    heater.deactivate()
+    heater.running = False
+    console.running = False
+    console.join()
+    lcdGraphic.join()
+    print("\nProgramm end. USER Input")
+    logger.info('Maischen Stoped by USER Input. SHUTDOWN now')
+    
+    os.system("sleep 2 && sudo shutdown -h now")
+    sys.exit(6)
+    
     
 except Exception as err:
     if options.graph:

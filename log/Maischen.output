@@ -6,36 +6,3 @@ Configuration components loading...
 ConfLoader Error! No File specified!
 Console components loading...
 Heater components loading...
-Graph module could not be loaded!
-#Console initialized
-#TempGetter [/sys/bus/w1/devices/28-0000074013a8/w1_slave] initialized
-#TempGetter [/sys/bus/w1/devices/28-0000074013a8/w1_slave] initialized
-#Heater initialized
-- Using real LCD Display
-#Display initialized
-- found Profiles: BBräu.conf, default.conf, DiffBär.conf, pils.conf, Weizen.conf
-- Loading profile: 'Seelzer Blaubier aus dem Bachland'
-- Loading profile: 'default'
-- Loading profile: 'DiffBär for King!'
-- Loading profile: 'Pils'
-- Loading profile: 'Weizen'
-#profiles initialized
-- found Profiles: global.conf
-- Loading profile: 'globalConfig'
-#globalConfig initialized
-[K
-2017-08-17 07:53:27 @ 0.00 C
-[K
-2017-08-17 07:53:28 @ 21.44 C
-[K
-2017-08-17 07:53:29 @ 21.44 C
-[K
-2017-08-17 07:53:30 @ 21.50 C
-Heater adjust Power: 0.00 %
-Heater stopped  (Power still: 0.00 %)
-TempGetter run stopped! [/sys/bus/w1/devices/28-0000074013a8/w1_slave]
-Heater adjust Power: 0.00 %
-Heater stopped  (Power still: 0.00 %)
-
-Programm end.
-TempGetter run stopped! [/sys/bus/w1/devices/28-0000074013a8/w1_slave]
