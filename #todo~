@@ -18,5 +18,4 @@ sudo modprobe rtl8192cu
 dmesg:
 [   10.793082] usbcore: registered new interface driver rtl8192cu
 [   10.865699] Error: Driver 'rtl8192cu' is already registered, aborting...
-
--> /etc/modprobe.d/blacklist.conf
+/etc/modprobe.d/blacklist.conf

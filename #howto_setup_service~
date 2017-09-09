@@ -8,7 +8,7 @@ if (( $EUID != 0 )); then
     exit
 fi
 
-python3 /home/sven/Maischen/run.py -s $1 $2
+python3 /home/sven/BrauSteuerung/run.py -s $1 $2
 
 echo "ENDE: Start script der Brausteuerung"
 
@@ -56,5 +56,9 @@ WantedBy=multi-user.target
 -> autostart via:
 -> sudo systemctl enable brausteuerung.service
 
+-> sudo systemctl status brausteuerung.service
+-> sudo systemctl stop brausteuerung.service
 
+wantedby: 
+network to be up: network-online.target
 

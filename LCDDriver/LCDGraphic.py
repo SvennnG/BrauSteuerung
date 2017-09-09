@@ -11,11 +11,11 @@ except:
     
 import logging
 
-TIME_TO_REINTERPRET_KEY_PRESSED = 500 # ms
-TIME_BACKLIGHT_ACK = 300        #ms
-ACCEPT_TEMPERATUR_RANGE = 0.3   #C to accept actual temperatur as goal
-PROFILESCROLLTIMERINIT = 1250   #ms
-PROFILESCROLLTIMERINC = 350     #ms
+TIME_TO_REINTERPRET_KEY_PRESSED = 300 	# ms
+TIME_BACKLIGHT_ACK = 300        		# ms
+ACCEPT_TEMPERATUR_RANGE = 0.3   		# C to accept actual temperatur as goal
+PROFILESCROLLTIMERINIT = 1250   		# ms
+PROFILESCROLLTIMERINC = 450     		# ms
 
 
 class LCDGraphic(threading.Thread):
@@ -496,22 +496,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(14,1)
         self.lcd.message("\x00C")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett6
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett2
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main
@@ -527,22 +527,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(13,1)
         self.lcd.message("min")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett1
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett3
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main
@@ -558,22 +558,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(14,1)
         self.lcd.message("\x00C")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett2
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett4
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main
@@ -589,22 +589,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(13,1)
         self.lcd.message("min")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett3
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett5
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main
@@ -620,22 +620,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(14,1)
         self.lcd.message("\x00C")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett4
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett6
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main
@@ -651,22 +651,22 @@ class LCDGraphic(threading.Thread):
         self.lcd.setCursor(13,1)
         self.lcd.message("min")
     
-        if self.isLeftButtonPressed():
-            print ("left pressed")
+        if self.isDownButtonPressed():
+            print ("down pressed")
             self.value = self.value - 1
-        elif self.isRightButtonPressed():
-            print ("right pressed")
-            self.value = self.value + 1
         elif self.isUpButtonPressed():
+            print ("up pressed")
+            self.value = self.value + 1
+        elif self.isLeftButtonPressed():
             self.saveSett()
             self.state = self.States.Sett5
             self.value = int(self.getSett())
-            print ("up pressed")
-        elif self.isDownButtonPressed():
+            print ("left pressed")
+        elif self.isRightButtonPressed():
             self.saveSett()
             self.state = self.States.Sett1
             self.value = int(self.getSett())
-            print ("down pressed")
+            print ("right pressed")
         elif self.isBackButtonPressed():
             self.saveSett()
             self.state = self.States.Main

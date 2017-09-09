@@ -21,8 +21,10 @@ class Heater(threading.Thread):
 		self.thirdBit = 0 # BCM 0, wiring 30
 		self.fourthBit = 5 # BCM 5, wiring 21
 		
-		self.linearNeg = -5
-		self.linearPos = 10
+		self.current_milli_time = lambda: int(round(time.time() * 1000))
+        
+		self.linearNeg = -22
+		self.linearPos = 22
 
 		try:
 			GPIO.setmode(GPIO.BCM)  # vs. GPIO.BOARD
@@ -108,6 +110,7 @@ class Heater(threading.Thread):
 	def run(self):
 		try:
 			#cnt = 0
+			self.time = self.current_milli_time()
 			while self.running:
 				if self.isHeating == True:
 				
@@ -122,21 +125,24 @@ class Heater(threading.Thread):
 					# else:               # controlled power (0-10 degree to heat), linear 20%-100% => 0-10 degree
 						# power = 20+8*diff
 					
-					
-					
-					
 					# Linear Regler: 
 					#       [-region , targetTmp, +region] 
 					#       [0          ...          100%]
-					min = self.targetTmp + self.linearNeg             
-					diff = self.tmp - min 
-					perc = 100 - 100 * diff / (abs(self.linearNeg) + abs(self.linearPos))
+					mint = self.targetTmp + self.linearNeg
+					maxt = self.targetTmp + self.linearPos
+					diff = maxt - self.tmp
+					perc = 100 * diff / (abs(self.linearNeg) + abs(self.linearPos))
 					if perc < 0:
 						perc = 0
 					if perc > 100:
 						perc = 100
 					power = perc
 					
+					
+					#~ if self.current_milli_time() - self.time > 1500:
+						#~ self.time = self.current_milli_time()
+						#~ print("mint", mint, "maxt", maxt, "diff", diff, "perc", perc)
+						#~ print("-:", self.linearNeg, ", +:", self.linearPos)
 					
 					
 					power = int(power)

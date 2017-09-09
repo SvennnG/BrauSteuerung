@@ -59,4 +59,10 @@ WantedBy=multi-user.target
 -> sudo systemctl status brausteuerung.service
 -> sudo systemctl stop brausteuerung.service
 
+wantedby: 
+network to be up: network-online.target
+
+verzögert:
+in start.sh:
+sleep 10 && python...
 

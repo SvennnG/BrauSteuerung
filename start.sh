@@ -5,7 +5,7 @@ if (( $EUID != 0 )); then
     exit
 fi
 
-python3 /home/sven/BrauSteuerung/run.py -s $1 $2
+sleep 10 && python3 /home/sven/BrauSteuerung/run.py -s $1 $2
 
 echo "ENDE: Start script der Brausteuerung"
 

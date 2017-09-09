@@ -8,10 +8,10 @@ import Configuration.ConfManager as ConfManager
 import console.Console as Console
 import Heater.Heater as Heater
 
-#~ try:
-    #~ import console.graph as Graph
-#~ except Exception as ex:
-    #~ print("Graph module could not be loaded!", ex)
+try:
+    import console.graph as Graph
+except Exception as ex:
+    print("Graph module could not be loaded!", ex)
     
 from optparse import OptionParser
 import locale
@@ -23,7 +23,7 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 # /etc/locale.gen muss das entsprechende locale einkommentiert haben, dann mittels locale-gen ausführen
 # locale -a zeigt alle verfügbaren sprachen
     
-   
+    
 # SVENTOP
 profilepath = "/home/sven/Documents/Maischen/Configuration/Profile/"
 globalprofilepath = "/home/sven/Documents/Maischen/Configuration/Global/"
@@ -33,11 +33,12 @@ defaultconfig = '/home/sven/Documents/Maischen/Configuration/default.conf'
 
 
 # Raspberry PI
-profilepath = "/home/sven/Maischen/Configuration/Profile/"
-globalprofilepath = "/home/sven/Maischen/Configuration/Global/"
+foldername = "BrauSteuerung" # Maischen
+profilepath = "/home/sven/" + foldername + "/Configuration/Profile/"
+globalprofilepath = "/home/sven/" + foldername + "/Configuration/Global/"
 #logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
-logfile = '/home/sven/Maischen/log/Maischen.log'
-defaultconfig = '/home/sven/Maischen/Configuration/default.conf'
+logfile = "/home/sven/" + foldername + "/log/Maischen.log"
+defaultconfig = "/home/sven/" + foldername + "/Configuration/default.conf"
 
 
 
@@ -160,8 +161,9 @@ def saveGlobal():
     if lcdGraphic.globalconfig[1][1] != globalconfman.profiles[0][3]:
         success += globalconfman.setGlobalValue("globalConfig", 2, lcdGraphic.globalconfig[1][1])
     try:
-        heater.linearNeg = globalconfman.profiles[0][2]
         heater.linearPos = globalconfman.profiles[0][3]
+        heater.linearNeg = globalconfman.profiles[0][2]
+        print("Linearregler Attribute Update: linearNeg = ", heater.linearNeg, "linearPos = ", heater.linearPos)
     except:
         print("Heater didn't get the new settings!")
     return success
@@ -200,6 +202,9 @@ try:
         lcdGraphic.setGetFkt(confman.getValue)
         lcdGraphic.setSaveFkt(confman.setValue)
         lcdGraphic.setHeaterStatusFkt(heater.status)
+        
+        # save global settings to heater
+        saveGlobal()
     except:
         print("Display functions to save/get config init failed!")
         
