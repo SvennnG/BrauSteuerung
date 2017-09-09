@@ -1,0 +1,62 @@
+-> Startscript erstellen:
+-> /home/sven/BrauSteuerung/start.sh
+
+#!/bin/bash
+
+if (( $EUID != 0 )); then
+    echo "Please run as root"
+    exit
+fi
+
+python3 /home/sven/BrauSteuerung/run.py -s $1 $2
+
+echo "ENDE: Start script der Brausteuerung"
+
+
+exit 0
+
+
+
+-> Service erstellen:
+-> sudo nano /lib/systemd/system/brausteuerung.service
+
+#########################################################################
+#
+# Brausteuerung.service
+# systemd service: start Brausteuerung on start
+#
+#########################################################################
+
+[Unit]
+Description=Runs the Brausteurerung as a service. /home/sven/BrauSteuerung/run.py
+After=syslog.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+PIDFile=/home/sven/BrauSteuerung/.pid
+WorkingDirectory=/home/sven/BrauSteuerung/
+SyslogIdentifier=brausteuerung
+StandardOutput=syslog
+StandardError=syslog
+ExecStart=/home/sven/BrauSteuerung/start.sh
+
+[Install]
+WantedBy=multi-user.target
+
+# EOF
+
+
+-> Speichern, Schließen
+-> sudo chmod 644 /lib/systemd/system/brausteuerung.service 
+-> sudo systemctl daemon-reload 
+-> sudo systemctl start brausteuerung.service
+
+-> autostart via:
+-> sudo systemctl enable brausteuerung.service
+
+-> sudo systemctl status brausteuerung.service
+-> sudo systemctl stop brausteuerung.service
+
+
