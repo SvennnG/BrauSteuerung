@@ -8,7 +8,7 @@ from datetime import datetime
 class TempEmu(threading.Thread):
     def __init__(self, file='/var/tmp/Px_temp.source'):
         threading.Thread.__init__(self)
-        self.file
+        self.file = file
         self.running=True
         self.output=True
         self.temp = 23
