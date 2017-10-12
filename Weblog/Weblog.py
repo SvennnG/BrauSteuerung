@@ -1,5 +1,5 @@
 #!/usr/bin/python
-import thread, time, sys
+import _thread, time, sys
 import datetime    
 from time import sleep
 
@@ -22,7 +22,7 @@ class Weblog():
             time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             zieltemp = "%.2f" % zieltemp
             
-            thread.start_new_thread( Websend.SendToDB, (temp, zieltemp, time, self.first) )
+            _thread.start_new_thread( Websend.SendToDB, (temp, zieltemp, time, self.first) )
             # Websend.SendToDB(temp, zieltemp, time, self.first)
             
             self.time = datetime.datetime.now()
