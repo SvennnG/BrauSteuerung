@@ -5,6 +5,7 @@ import threading
 import logging
 import re
 import sys
+import os
 #from Reader import tail
 
 tempgetterID = 0
@@ -81,10 +82,10 @@ if __name__ == "__main__":
         
         while 1:
             t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-            print ("\r\x1b[K"),
-            print ("%s -" % t),
+            print ("\r\x1b[K", end='')
+            print ("%s -" % t, end='')
             for item in tempGetter:
-                print ("- %s: %.2f C " % (item.id,  item.temp)),
+                print ("- %s: %.2f C " % (item.id,  item.temp), end='')
             sys.stdout.flush()
             time.sleep(0.5)
         
