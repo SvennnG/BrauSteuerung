@@ -5,9 +5,9 @@ import sys, logging, time, os
 import TempGetter.TempGetter as TempGetter
 import LCDDriver.LCDGraphic as LCDGraphic
 import Configuration.ConfManager as ConfManager
-import console.Console as Console
+import Console.Console as Console
 import Heater.Heater as Heater
-
+import Weblog.Weblog as Weblog
 try:
     import console.graph as Graph
 except Exception as ex:
@@ -94,6 +94,8 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
 logger.setLevel(logging.DEBUG)
 
+# WEBlog (temp, zieltemp, time, first)
+weblog = Weblog.Weblog()
 
 #####################
 # TempGetter Init
@@ -222,6 +224,7 @@ try:
     while 1:
         lastUpdate = int(round(time.time() * 1000))
         
+        
         if tempGetter.temp == 0.0:
             tempGetter.temp = tempGetter2.temp
         if tempGetter2.temp == 0.0:
@@ -238,9 +241,12 @@ try:
                 heater.activate()
             heater.updateTargetTemperature(lcdGraphic.valueTemp)
             heater.update(tmp) 
-            
+            weblog.log(tmp, lcdGraphic.valueTemp)
         elif heater.isHeating:
             heater.deactivate()
+            weblog.log(tmp, 0)
+        else:
+            weblog.log(tmp, 0)
         
         console.temp = tmp
         
