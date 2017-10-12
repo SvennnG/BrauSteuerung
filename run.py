@@ -24,27 +24,23 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 # locale -a zeigt alle verfügbaren sprachen
     
     
-# SVENTOP
-profilepath = "/home/sven/Documents/Maischen/Configuration/Profile/"
-globalprofilepath = "/home/sven/Documents/Maischen/Configuration/Global/"
-#logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
-logfile = '/home/sven/Documents/Maischen/log/Maischen.log'
-defaultconfig = '/home/sven/Documents/Maischen/Configuration/default.conf'
-
-
 # Raspberry PI
-foldername = "BrauSteuerung" # Maischen
-profilepath = "/home/sven/" + foldername + "/Configuration/Profile/"
-globalprofilepath = "/home/sven/" + foldername + "/Configuration/Global/"
-#logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
-logfile = "/home/sven/" + foldername + "/log/Maischen.log"
-defaultconfig = "/home/sven/" + foldername + "/Configuration/default.conf"
-
-
-
-
+foldername = "/home/sven/BrauSteuerung"
 tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
 tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
+
+# SVENTOP
+foldername = "/home/sven/Documents/Brausteuerung" 
+tempSensor1 = '/var/tmp/Px_temp.source'
+tempSensor2 = '/var/tmp/Px_temp.source'
+
+
+profilepath = foldername + "/Configuration/Profile/"
+globalprofilepath = foldername + "/Configuration/Global/"
+#logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
+logfile = foldername + "/log/Maischen.log"
+defaultconfig =foldername + "/Configuration/default.conf"
+
 
 
 #####################
