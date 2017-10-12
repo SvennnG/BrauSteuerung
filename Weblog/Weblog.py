@@ -10,7 +10,7 @@ except Exception as ex:
 
 
 class Weblog():
-	def __init__(self):
+    def __init__(self):
         self.first = 1
 
     def log(self, temp, zieltemp):
