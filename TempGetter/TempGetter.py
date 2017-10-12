@@ -11,6 +11,7 @@ tempgetterID = 0
 
 class TempGetter(threading.Thread):
     def __init__(self, file='/var/tmp/Px_temp.source'):
+        global tempgetterID
         threading.Thread.__init__(self)
         self.id = tempgetterID
         tempgetterID = tempgetterID + 1
