@@ -11,7 +11,7 @@ except Exception as ex:
 
 class Weblog():
     def __init__(self):
-        self.first = 1
+        self.first = "1"
         self.time = datetime.datetime.now()
 
     def log(self, temp, zieltemp):
@@ -27,7 +27,7 @@ class Weblog():
             # Websend.SendToDB(temp, zieltemp, time, self.first)
             
             self.time = datetime.datetime.now()
-            self.first = 0
+            self.first = "0"
         except Exception as ex:
             print("could not log to website!", ex)
 
