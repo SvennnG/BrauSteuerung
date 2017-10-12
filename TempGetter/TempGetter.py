@@ -7,10 +7,13 @@ import re
 import sys
 #from Reader import tail
 
+tempgetterID = 0
+
 class TempGetter(threading.Thread):
     def __init__(self, file='/var/tmp/Px_temp.source'):
         threading.Thread.__init__(self)
-            
+        self.id = tempgetterID
+        tempgetterID = tempgetterID + 1
         self.file=file
         self.running=True
         self.output=True	# output to logger
@@ -55,3 +58,40 @@ class TempGetter(threading.Thread):
             return self.temp
         return value
 
+
+if __name__ == "__main__":
+    try:
+        logger = logging.getLogger('TempSensor')
+        hdlr = logging.FileHandler('/var/log/TempSensor.log')
+        formatter = logging.Formatter('%(asctime)s %(levelname)s: [%(filename)14s:%(lineno)3s - %(funcName)9s()] %(message)s')
+        hdlr.setFormatter(formatter)
+        logger.addHandler(hdlr) 
+        logger.setLevel(logging.INFO)
+
+        tempGetter = []
+        tempGetter.append(TempGetter())
+        for x,  dirs,  y in os.walk('/sys/bus/w1/devices/'):
+            for x in dirs:
+                if x.startswith('28-'):
+                    tempGetter.append(TempGetter("/sys/bus/w1/devices/"+str(x)+"/w1_slave"))
+        
+        for item in tempGetter:
+            item.start()
+        
+        while 1:
+            t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+            print ("\r\x1b[K"),
+            print ("%s -" % t),
+            for item in tempGetter:
+                print ("- %s: %.2f C " % (item.id,  item.temp)),
+            sys.stdout.flush()
+            time.sleep(0.5)
+        
+        for item in tempGetter:
+            item.running = False
+        for item in tempGetter:
+            item.join()
+
+    except (KeyboardInterrupt, SystemExit):
+        for item in tempGetter:
+            item.running = False

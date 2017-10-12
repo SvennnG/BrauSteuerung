@@ -30,7 +30,7 @@ tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
 tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
 
 # SVENTOP
-foldername = "/home/sven/Documents/Brausteuerung" 
+foldername = "/home/sven/Documents/BrauSteuerung" 
 tempSensor1 = '/var/tmp/Px_temp.source'
 tempSensor2 = '/var/tmp/Px_temp.source'
 
