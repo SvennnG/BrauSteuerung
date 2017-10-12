@@ -10,7 +10,7 @@ class TempEmu(threading.Thread):
         threading.Thread.__init__(self)
         self.file=open(file, 'w', 0)
         self.running=True
-        self.output=False
+        self.output=True
         self.temp = 23
         
     def run(self):
@@ -30,7 +30,7 @@ class TempEmu(threading.Thread):
             self.file.write("5f 01 4b 46 7f ff 01 10 9b t={0:05.0f}\n".format(self.temp*1000))
             
             if cnt % 10 and self.output == True:
-                print "Temp set (10. step) : %.2f" % self.temp
+                print("Temp set (10. step) : %.2f" % self.temp)
             cnt = cnt + 1
             time.sleep(0.1)
         print "TempEmu run stopped!"
@@ -39,5 +39,9 @@ if __name__ == "__main__":
 	Temu = TempEmu();
 	Temu.start();
 
-	while 1: 
-		time.sleep(0.05)
+    try:
+        while 1: 
+            time.sleep(0.05)
+            
+    except (KeyboardInterrupt, SystemExit):
+        Temu.running = False
