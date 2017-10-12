@@ -23,16 +23,16 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 # /etc/locale.gen muss das entsprechende locale einkommentiert haben, dann mittels locale-gen ausführen
 # locale -a zeigt alle verfügbaren sprachen
     
-    
-# Raspberry PI
-foldername = "/home/sven/BrauSteuerung"
-tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
-tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
-
-# SVENTOP
-foldername = "/home/sven/Documents/BrauSteuerung" 
-tempSensor1 = '/var/tmp/Px_temp.source'
-tempSensor2 = '/var/tmp/Px_temp.source'
+if os.uname()[4].startswith("arm"):
+    # Raspberry PI
+    foldername = "/home/sven/BrauSteuerung"
+    tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
+    tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
+else:
+    # SVENTOP
+    foldername = "/home/sven/Documents/BrauSteuerung" 
+    tempSensor1 = '/var/tmp/Px_temp.source'
+    tempSensor2 = '/var/tmp/Px_temp.source'
 
 
 profilepath = foldername + "/Configuration/Profile/"
