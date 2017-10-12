@@ -9,7 +9,7 @@ import Console.Console as Console
 import Heater.Heater as Heater
 import Weblog.Weblog as Weblog
 try:
-    import console.graph as Graph
+    import Console.graph as Graph
 except Exception as ex:
     print("Graph module could not be loaded!", ex)
     
