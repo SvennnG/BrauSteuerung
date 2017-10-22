@@ -5,11 +5,11 @@ import sys, logging, time, os
 import TempGetter.TempGetter as TempGetter
 import LCDDriver.LCDGraphic as LCDGraphic
 import Configuration.ConfManager as ConfManager
-import console.Console as Console
+import Console.Console as Console
 import Heater.Heater as Heater
-
+import Weblog.Weblog as Weblog
 try:
-    import console.graph as Graph
+    import Console.graph as Graph
 except Exception as ex:
     print("Graph module could not be loaded!", ex)
     
@@ -23,28 +23,24 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 # /etc/locale.gen muss das entsprechende locale einkommentiert haben, dann mittels locale-gen ausführen
 # locale -a zeigt alle verfügbaren sprachen
     
-    
-# SVENTOP
-profilepath = "/home/sven/Documents/Maischen/Configuration/Profile/"
-globalprofilepath = "/home/sven/Documents/Maischen/Configuration/Global/"
+if os.uname()[4].startswith("arm"):
+    # Raspberry PI
+    foldername = "/home/sven/BrauSteuerung"
+    tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
+    tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
+else:
+    # SVENTOP
+    foldername = "/home/sven/Documents/BrauSteuerung" 
+    tempSensor1 = '/var/tmp/Px_temp.source'
+    tempSensor2 = '/var/tmp/Px_temp.source'
+
+
+profilepath = foldername + "/Configuration/Profile/"
+globalprofilepath = foldername + "/Configuration/Global/"
 #logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
-logfile = '/home/sven/Documents/Maischen/log/Maischen.log'
-defaultconfig = '/home/sven/Documents/Maischen/Configuration/default.conf'
+logfile = foldername + "/log/Maischen.log"
+defaultconfig =foldername + "/Configuration/default.conf"
 
-
-# Raspberry PI
-foldername = "BrauSteuerung" # Maischen
-profilepath = "/home/sven/" + foldername + "/Configuration/Profile/"
-globalprofilepath = "/home/sven/" + foldername + "/Configuration/Global/"
-#logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
-logfile = "/home/sven/" + foldername + "/log/Maischen.log"
-defaultconfig = "/home/sven/" + foldername + "/Configuration/default.conf"
-
-
-
-
-tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
-tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
 
 
 #####################
@@ -94,6 +90,8 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
 logger.setLevel(logging.DEBUG)
 
+# WEBlog (temp, zieltemp, time, first)
+weblog = Weblog.Weblog()
 
 #####################
 # TempGetter Init
@@ -222,6 +220,7 @@ try:
     while 1:
         lastUpdate = int(round(time.time() * 1000))
         
+        
         if tempGetter.temp == 0.0:
             tempGetter.temp = tempGetter2.temp
         if tempGetter2.temp == 0.0:
@@ -238,9 +237,12 @@ try:
                 heater.activate()
             heater.updateTargetTemperature(lcdGraphic.valueTemp)
             heater.update(tmp) 
-            
+            weblog.log(tmp, lcdGraphic.valueTemp)
         elif heater.isHeating:
             heater.deactivate()
+            weblog.log(tmp, 0)
+        else:
+            weblog.log(tmp, 0)
         
         console.temp = tmp
         
