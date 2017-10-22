@@ -21,6 +21,8 @@ class Heater(threading.Thread):
 		self.thirdBit = 0 # BCM 0, wiring 30
 		self.fourthBit = 5 # BCM 5, wiring 21
 		
+		self.activatePin = 22 # BCM 22, wiring ? pin 15
+		
 		self.current_milli_time = lambda: int(round(time.time() * 1000))
         
 		self.linearNeg = -22
@@ -34,11 +36,15 @@ class Heater(threading.Thread):
 			GPIO.setup(self.secondBit, GPIO.OUT)
 			GPIO.setup(self.thirdBit, GPIO.OUT)
 			GPIO.setup(self.fourthBit, GPIO.OUT)
+			
+			GPIO.setup(self.activatePin, GPIO.OUT)
 
 			GPIO.output(self.firstBit, GPIO.LOW)
 			GPIO.output(self.secondBit, GPIO.LOW)
 			GPIO.output(self.thirdBit, GPIO.LOW)
 			GPIO.output(self.fourthBit, GPIO.LOW)
+			
+			GPIO.output(self.activatePin, GPIO.LOW)
 		except Exception as ex:
 			print("HEATER init Error: GPIO could not be initialized. HEATER wont run!", ex)
 
@@ -113,6 +119,11 @@ class Heater(threading.Thread):
 			self.time = self.current_milli_time()
 			while self.running:
 				if self.isHeating == True:
+					try:
+						GPIO.output(self.activatePin, GPIO.HIGH)
+					except Exception as ex:
+						print("HEATER active not possible. GPIO could not be set. HEATER doesnt run! - Heater is shutting down!", ex)
+						self.running = False
 				
 					# linear Regler mit Stufe:
 					#diff = self.targetTmp - self.tmp
@@ -151,6 +162,11 @@ class Heater(threading.Thread):
 						
 				elif self.power != 0.0: # no more heating => power to 0
 					self.adjust(0.0)
+					try:
+						GPIO.output(self.activatePin, GPIO.LOW)
+					except Exception as ex:
+						print("HEATER active not possible. GPIO could not be set. HEATER doesnt run! - Heater is shutting down!", ex)
+						self.running = False
 				
 				# update symbol in lcd...
 				# adjust heating...

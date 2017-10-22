@@ -238,6 +238,12 @@ try:
             heater.updateTargetTemperature(lcdGraphic.valueTemp)
             heater.update(tmp) 
             weblog.log(tmp, lcdGraphic.valueTemp)
+        elif lcdGraphic.state.value == 18:
+            if heater.isHeating == False:
+                heater.activate()
+            heater.updateTargetTemperature(20.0)
+            heater.update(tmp) 
+            weblog.log(tmp, 20)
         elif heater.isHeating:
             heater.deactivate()
             weblog.log(tmp, 0)

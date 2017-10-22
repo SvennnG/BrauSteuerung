@@ -31,11 +31,8 @@ def SendToDB(temp, zieltemp, time, first):
     # this gets the page text
     status = res.status
 
-    if status == 200:
-        return print("Sending to DB completed successfully! [Status 200 from web]");
-    else:
+    if status != 200:
         return print("Error sending to DB!:", status);
-
         
     #data = res.read() 
     #print(data)
