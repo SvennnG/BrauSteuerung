@@ -20,17 +20,19 @@ class TempGetter(threading.Thread):
         self.running=True
         self.output=True	# output to logger
         self.logger = logging.getLogger('Maischen')
-        self.temp = 0.0
+        self.temp = -1.0
         self.debug = False	# exception printing
         
         print("#TempGetter [" + file + "] initialized")
     def run(self):
         cnt = 0
         while self.running:
-            self.temp = float(self.read_sensor())
+            newtmp = float(self.read_sensor())
             if self.temp == False:
-                self.temp = 0.0
+                self.temp = self.temp
                 self.logger.warning('IO Error: read file %s failed!' % self.file)
+            else:
+                self.temp = newtmp
             if cnt % 2 == 0:
                 #self.logger.info('Temp @%s is %.2f' % (self.file, self.temp))
                 if self.output == True:
@@ -56,7 +58,7 @@ class TempGetter(threading.Thread):
                 print (time.strftime("%x %X"), "Error reading", self.file, ": ", e)
             return False
         
-        if float(value) == 85.0:    # if connection error on sensor cable -> this is a error code, return last known temperature
+        if float(value) == 85.0 or float(value) == 0.0:    # if connection error on sensor cable -> this is a error code, return last known temperature
             return self.temp
         return value
 

@@ -1,4 +1,4 @@
-import os
+import os, sys
 import time
 import random
 import threading
@@ -12,6 +12,7 @@ class TempEmu(threading.Thread):
         self.running=True
         self.output=True
         self.temp = 23
+        print("\nTempEmu run start!\n  File: %s\n" % self.file)
         
     def run(self):
         cnt = 0
@@ -32,11 +33,15 @@ class TempEmu(threading.Thread):
             file.write("5f 01 4b 46 7f ff 01 10 9b t={0:05.0f}\n".format(self.temp*1000))
             file.close()
             
-            if cnt % 10 and self.output == True:
-                print("Temp set (10. step) : %.2f" % self.temp)
+            if cnt % 1 == 0 and self.output == True:
+                t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+                print ("\r\x1b[K", end='', flush=True)
+                print ("%s - " % t, end='', flush=True)
+                print("Temp: %.2f" % self.temp, end='', flush=True)
+                cnt = 0;
             cnt = cnt + 1
-            time.sleep(0.25)
-        print("TempEmu run stopped!")
+            time.sleep(1)
+        print("\nTempEmu run stopped!")
 
 if __name__ == "__main__":
     Temu = TempEmu();

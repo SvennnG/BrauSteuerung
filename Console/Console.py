@@ -88,7 +88,7 @@ class Console(threading.Thread):
             self.mystdout = 0
             self.updateInterval = 1000 # in ms
             
-        self.temp = 0
+        self.temp = 0.0
         
         print("#Console initialized")
         
@@ -130,14 +130,13 @@ class Console(threading.Thread):
                 
             else:   # std console
                 
-                t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-                print ("\r\x1b[K"),
-                print ("%s @ %.2f C" % (t, self.temp)),
-                sys.stdout.flush()
+                if (self.temp != -1.0):
+                    t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+                    print ("\r\x1b[K", end=''),
+                    print ("%s @ %.2f C " % (t, self.temp), end='', flush=True)
                 
             while int(round(time.time() * 1000)) < lastUpdate + self.updateInterval:
                 time.sleep(0.05)
-        
         self.quit()
         
     def quit(self):

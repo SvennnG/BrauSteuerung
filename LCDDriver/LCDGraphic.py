@@ -204,12 +204,8 @@ class LCDGraphic(threading.Thread):
 		print("#Display initialized")
 		
 	def run(self):
-		#cnt = 0
-
 		self.initLCD()
-#		self.lcd.backlight(self.lcd.OFF)
-#		self.lcd.clear()
-#		self.lcd.stop()
+        
 		while self.running:	
 			try:
 				# execute render function for current state

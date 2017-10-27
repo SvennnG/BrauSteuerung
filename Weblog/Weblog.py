@@ -13,6 +13,7 @@ class Weblog():
     def __init__(self):
         self.first = "1"
         self.time = datetime.datetime.now()
+        print("#Weblog initialized!")
 
     def log(self, temp, zieltemp):
         try:

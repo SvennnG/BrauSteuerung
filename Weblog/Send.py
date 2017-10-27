@@ -6,7 +6,7 @@ import urllib.parse
 
 def SendToDB(temp, zieltemp, time, first):
     #This sets up the https connection
-    c = HTTPSConnection("gesper-web.de")
+    c = HTTPSConnection("brau.gesper-web.de")
     #we need to base 64 encode it 
     #and then decode it to acsii as python 3 stores it as a byte string
     userAndPass = b64encode(b"brauer:Seelze!Bier").decode("ascii")

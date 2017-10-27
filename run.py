@@ -16,6 +16,8 @@ except Exception as ex:
 from optparse import OptionParser
 import locale
 
+print("\n ### Load Complete! ###\n")
+
 if locale.getpreferredencoding().upper() != 'UTF-8': 
     locale.setlocale(locale.LC_ALL, 'de_DE.utf8')
 # How to generate Locales:   
@@ -24,15 +26,13 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 # locale -a zeigt alle verfügbaren sprachen
     
 if os.uname()[4].startswith("arm"):
-    # Raspberry PI
+    # Raspberry PI -s (no pygame)
     foldername = "/home/sven/BrauSteuerung"
     tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
     tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
 else:
-    # SVENTOP
+    # SVENTOP alway with -e (emulate fot tempsensor)
     foldername = "/home/sven/Documents/BrauSteuerung" 
-    tempSensor1 = '/var/tmp/Px_temp.source'
-    tempSensor2 = '/var/tmp/Px_temp.source'
 
 
 profilepath = foldername + "/Configuration/Profile/"
@@ -64,6 +64,7 @@ def optional_arg(arg_default):
 parser.add_option("-v", "--virtual", dest="virtual", action="store_true", help="to open the Diaply as a virtual Emulated Display")
 parser.add_option("-g", "--graph", dest="graph", action="store_true", help="to open a pygame window with the graph of temperature")
 parser.add_option("-s", "--silent", dest="silent", action="store_true", help="show without 'console' window. like a typical cmdline program with this option")
+parser.add_option("-e", "--emulate", dest="emulate", action="store_true", help="emulate Temperature Sensor by using input File: /var/tmp/Px_temp.source")
 
 (options, args) = parser.parse_args()
 
@@ -90,14 +91,16 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr) 
 logger.setLevel(logging.DEBUG)
 
-# WEBlog (temp, zieltemp, time, first)
-weblog = Weblog.Weblog()
-
 #####################
 # TempGetter Init
 #####################
 tempGetter = 0
 tempGetter2 = 0
+
+if options.emulate:
+    tempSensor1 = '/var/tmp/Px_temp.source'
+    tempSensor2 = '/var/tmp/Px_temp.source'
+
 try:
     tempGetter = TempGetter.TempGetter(tempSensor1)    # unten
     tempGetter2 = TempGetter.TempGetter(tempSensor1)
@@ -168,18 +171,29 @@ def saveGlobal():
 
 try:
     logger.info('Maischen Programm Started.')
-
-    try:
-        console.start()
-    except Exception as ex:
-        print("Console start failed!", ex)
-        
+    
     try:
         tempGetter.start()
         tempGetter2.start()
     except Exception as ex:
         print("Temp Sensors start failed!", ex)
         
+    try:
+        weblog = Weblog.Weblog()
+    except Exception as ex:
+        print("Web Logger start failed!", ex)
+
+    try:
+        lcdGraphic.start()
+    except:
+        print("Display start failed!")
+        
+    if options.graph:
+        try:
+            graph.start()
+        except:
+            print("Temperatur Graph start failed!")
+            
     try:
         heater.start()
     except Exception as ex:
@@ -201,25 +215,18 @@ try:
         lcdGraphic.setSaveFkt(confman.setValue)
         lcdGraphic.setHeaterStatusFkt(heater.status)
         
-        # save global settings to heater
-        saveGlobal()
+        saveGlobal()    # save global settings to heater
     except:
         print("Display functions to save/get config init failed!")
-        
+                    
     try:
-        lcdGraphic.start()
-    except:
-        print("Display start failed!")
-    
-    if options.graph:
-        try:
-            graph.start()
-        except:
-            print("Temperatur Graph start failed!")
-            
+        console.start()
+    except Exception as ex:
+        print("Console start failed!", ex)
+        
+    print("\n ### Start of All Components completed ! ###\n")
     while 1:
         lastUpdate = int(round(time.time() * 1000))
-        
         
         if tempGetter.temp == 0.0:
             tempGetter.temp = tempGetter2.temp
@@ -259,20 +266,19 @@ try:
         while int(round(time.time() * 1000)) < lastUpdate + 100:
             time.sleep(0.05)
         
-
-    if options.graph:
-        graph.running = False
-    logger.info('Maischen Stoped naturally!')
-    tempGetter.running = False
-    tempGetter2.running = False
-    lcdGraphic.running = False
-    heater.running = False
-    tempGetter.join()
-    tempGetter2.join()
-    lcdGraphic.join()
-    heater.join()
-    console.running = False
-    console.join()
+    # if options.graph:
+        # graph.running = False
+    # logger.info('Maischen Stoped naturally!')
+    # tempGetter.running = False
+    # tempGetter2.running = False
+    # lcdGraphic.running = False
+    # heater.running = False
+    # tempGetter.join()
+    # tempGetter2.join()
+    # lcdGraphic.join()
+    # heater.join()
+    # console.running = False
+    # console.join()
 
 except (KeyboardInterrupt, SystemExit):
     if options.graph:
@@ -307,8 +313,7 @@ except LCDExitException:
     
     os.system("sleep 2 && sudo shutdown -h now")
     sys.exit(6)
-    
-    
+        
 except Exception as err:
     if options.graph:
         graph.running = False
@@ -325,6 +330,4 @@ except Exception as err:
     logger.info(err)
     sys.exit(7)
     
-
-
 sys.exit(0)

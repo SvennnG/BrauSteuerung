@@ -15,7 +15,7 @@ import time, codecs
 
 def read(configfile = ""):
     if configfile == "":
-        print("ConfLoader Error! No File specified!")
+        #print("ConfLoader Error! No File specified!")
         return
         
     try:
@@ -50,7 +50,7 @@ def read(configfile = ""):
 # 
 def readGlobal(configfile = ""):
     if configfile == "":
-        print("ConfLoader Error! No File specified!")
+        print("ConfLoader Global Error! No File specified!")
         return
         
     try:
