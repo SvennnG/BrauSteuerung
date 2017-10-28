@@ -224,6 +224,7 @@ try:
     except Exception as ex:
         print("Console start failed!", ex)
         
+    lastState = 0
     print("\n ### Start of All Components completed ! ###\n")
     while 1:
         lastUpdate = int(round(time.time() * 1000))
@@ -236,7 +237,10 @@ try:
 
         lcdGraphic.update(tmp)
         
-        if lcdGraphic.state.value >= 11 and lcdGraphic.state.value <= 17: #LCDGraphic.LCDGraphic.States is running
+        if lcdGraphic.state.value == 11 and lastState != 11:
+            weblog.log(tmp, lcdGraphic.valueTemp, 1)
+            print(" Weblog new Dataset!")
+        elif lcdGraphic.state.value >= 11 and lcdGraphic.state.value <= 17: #LCDGraphic.LCDGraphic.States is running
             # 11 = preHeating
             # 17 = Rast3
             # 18 = Done
@@ -257,6 +261,7 @@ try:
         else:
             weblog.log(tmp, 0)
         
+        lastState = lcdGraphic.state.value
         console.temp = tmp
         
         if lcdGraphic.wantsToExit:

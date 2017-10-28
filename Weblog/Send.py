@@ -19,6 +19,7 @@ def SendToDB(temp, zieltemp, time, first):
     zieltemp = urllib.parse.quote_plus(zieltemp)
     first = urllib.parse.quote_plus(first)
 
+    print("Send to Web, First: %s." % first, end='\n', flush=True)
     url = '/admin/addToDB.php?temp='+temp+'&time='+time+'&zieltemp='+zieltemp+'&first='+first
 
     #print(url)
@@ -32,7 +33,10 @@ def SendToDB(temp, zieltemp, time, first):
     status = res.status
 
     if status != 200:
-        return print("Error sending to DB!:", status);
+        print("Error sending to DB!: %s" % status, flush=True)
+        #return print("Error sending to DB!:", status);
+    else:
+        print(" Success! ", end='', flush=True)
         
     #data = res.read() 
     #print(data)
