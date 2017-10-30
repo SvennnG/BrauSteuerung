@@ -13,7 +13,7 @@ import logging
 
 TIME_TO_REINTERPRET_KEY_PRESSED = 300 	# ms
 TIME_BACKLIGHT_ACK = 300        		# ms
-ACCEPT_TEMPERATUR_RANGE = 0.3   		# C to accept actual temperatur as goal
+ACCEPT_TEMPERATUR_RANGE = 0.8   		# C to accept actual temperatur as goal
 PROFILESCROLLTIMERINIT = 1250   		# ms
 PROFILESCROLLTIMERINC = 450     		# ms
 
@@ -244,7 +244,7 @@ class LCDGraphic(threading.Thread):
 						self.valueTime = int(self.getSett(6)) #3. Rast / preheat    dauer
 						print ("Rast 2 complete. Continue to heat to Rast 3")
 						
-				elif self.state == self.States.HeatRast2:      # HeatRast3
+				elif self.state == self.States.HeatRast3:      # HeatRast3
 					if self.tmp >= self.valueTemp - offset and self.tmp <= self.valueTemp + offset :
 						self.state = self.States.Rast3
 						self.countdown = self.current_secs_time() + self.valueTime * 60
