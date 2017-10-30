@@ -28,10 +28,7 @@ class TempEmu(threading.Thread):
 
             #t = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")
             
-            file=open(self.file, 'w')
-            file.write("5f 01 4b 46 7f ff 01 10 9b : crc=9b YES\n")
-            file.write("5f 01 4b 46 7f ff 01 10 9b t={0:05.0f}\n".format(self.temp*1000))
-            file.close()
+            self.set()
             
             if cnt % 1 == 0 and self.output == True:
                 t = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
@@ -42,10 +39,24 @@ class TempEmu(threading.Thread):
             cnt = cnt + 1
             time.sleep(1)
         print("\nTempEmu run stopped!")
+        
+        
+    def set(self):
+        file=open(self.file, 'w')
+        file.write("5f 01 4b 46 7f ff 01 10 9b : crc=9b YES\n")
+        file.write("5f 01 4b 46 7f ff 01 10 9b t={0:05.0f}\n".format(self.temp*1000))
+        file.close()
 
 if __name__ == "__main__":
     Temu = TempEmu();
-    Temu.start();
+        
+    if len(sys.argv) > 1:
+        Temu.temp = float(sys.argv[1])
+        Temu.set()
+        print("Temp set to %i" % Temu.temp)
+        exit(0)
+    else:
+        Temu.start();
 
     try:
         while 1: 
