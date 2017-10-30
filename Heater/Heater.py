@@ -61,7 +61,7 @@ class Heater(threading.Thread):
 				return
 			
 			self.power = float(percentPower)
-			
+                            
 			n = int(round(self.power / 100 * 15))
 			
 			try:
@@ -117,6 +117,7 @@ class Heater(threading.Thread):
 		try:
 			#cnt = 0
 			self.time = self.current_milli_time()
+			integral_error = 0
 			while self.running:
 				if self.isHeating == True:
 					try:
@@ -125,36 +126,48 @@ class Heater(threading.Thread):
 						print("HEATER active not possible. GPIO could not be set. HEATER doesnt run! - Heater is shutting down!", ex)
 						self.running = False
 				
-					# linear Regler mit Stufe:
-					#diff = self.targetTmp - self.tmp
-					# if diff >= 10:      # full power (>10 degree to heat)
-						# power = 100.0
-					# elif diff <= -3.0:   # cooling, too hot (>3 degree)
-						# power = 0
-					# elif diff <= 0.0:   # small power, little too hot (0-3 degree)
-						# power = 10
-					# else:               # controlled power (0-10 degree to heat), linear 20%-100% => 0-10 degree
-						# power = 20+8*diff
-					
 					# Linear Regler: 
 					#       [-region , targetTmp, +region] 
 					#       [0          ...          100%]
-					mint = self.targetTmp + self.linearNeg
-					maxt = self.targetTmp + self.linearPos
-					diff = maxt - self.tmp
-					perc = 100 * diff / (abs(self.linearNeg) + abs(self.linearPos))
-					if perc < 0:
-						perc = 0
-					if perc > 100:
-						perc = 100
-					power = perc
+                    # verschiebung des linare bereichs entsprechend der zieltemperatur: (-5, +2)
+                    #17% bei 57 um temp zu halten
+                    #21% bei 64 um temp zu halten
+                    #26% bei 73 um temp zu halten
+                    #28% bei 76 um temp zu halten
+                    #33% bei 85 um temp zu halten
+					kfaktor = 2.5 											# Intensität der verschiebung
+					ttmp = self.tmp + (kfaktor - self.targetTmp/76*kfaktor) # bei Temperatur 76 keine Verschiebung
+                    
+					min_temp = self.targetTmp + self.linearNeg
+					max_temp = self.targetTmp + self.linearPos
+					diff = max_temp - ttmp
+					linear_percent = 100 * diff / (abs(self.linearNeg) + abs(self.linearPos))
+					if linear_percent < 0:
+						linear_percent = 0
+					if linear_percent > 100:
+						linear_percent = 100
+
+					# INTEGRAL Regler:
+					#    additiv zu linear hinzu
+					#    klingt langsam ab (0.99 ~ hälfte je minute, 0.98~ hälfte alle 30s)
+					error = self.targetTmp - self.tmp
+					integral_error = integral_error + error
+					integral_error = 0.98 * integral_error	
 					
+					#power = linear_percent
+					power = linear_percent * 1 + integral_error * 1	# gewichtete Summe
 					
-					#~ if self.current_milli_time() - self.time > 1500:
-						#~ self.time = self.current_milli_time()
-						#~ print("mint", mint, "maxt", maxt, "diff", diff, "perc", perc)
-						#~ print("-:", self.linearNeg, ", +:", self.linearPos)
+					if power > 100:
+						power = 100
+					if power < 0:
+						power = 0
 					
+					print("\n Integral: %f\n power: %f\n" % (integral_error, power))
+					
+					#if self.current_milli_time() - self.time > 1500:
+				#		self.time = self.current_milli_time()
+			#			print("mint", mint, "maxt", maxt, "diff", diff, "perc", perc)
+		#				print("-:", self.linearNeg, ", +:", self.linearPos)
 					
 					power = int(power)
 					if int(self.power) != power:
@@ -168,11 +181,11 @@ class Heater(threading.Thread):
 						print("HEATER active not possible. GPIO could not be set. HEATER doesnt run! - Heater is shutting down!", ex)
 						self.running = False
 				
-				# update symbol in lcd...
-				# adjust heating...
 				#print("Heater; alive: %r, power: %2.2f %%" % (self.isHeating, self.power))
-				
-				time.sleep(1)
+				while self.current_milli_time() - self.time < 1000:
+					time.sleep(0.1)
+				self.time = self.current_milli_time()
+					
 			self.adjust(0.0)
 			self.deactivate()
 		except Exception as ex:
