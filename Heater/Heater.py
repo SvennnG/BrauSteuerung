@@ -151,8 +151,21 @@ class Heater(threading.Thread):
 					#    additiv zu linear hinzu
 					#    klingt langsam ab (0.99 ~ hälfte je minute, 0.98~ hälfte alle 30s)
 					error = self.targetTmp - self.tmp
+
 					integral_error = integral_error + error
-					integral_error = 0.98 * integral_error	
+					if error > 0.01:
+						if integral_error < 0:
+							integral_error = integral_error * 0.94
+					elif error < 0.01:
+						if integral_error > 0:
+							integral_error = integral_error * 0.94
+                            
+					if integral_error < -66:
+						integral_error = -66
+					if integral_error > 66:
+						integral_error = 66
+                        
+					integral_error = 0.99 * integral_error	
 					
 					#power = linear_percent
 					power = linear_percent * 1 + integral_error * 1	# gewichtete Summe
