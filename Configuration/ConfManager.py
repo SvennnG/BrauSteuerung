@@ -111,8 +111,8 @@ class ConfManager():
 			self.cursor.execute(sql)
 			row = self.cursor.fetchone()
 			while row is not None:
-				#print("[MYSQL]: Profile found: "+str(row[0].decode(encoding="utf-8")))
-				self.profiles[row[0].decode(encoding="utf-8")] = ""
+				print("[MYSQL]: Profile found: "+str(row[0]))
+				self.profiles[row[0]] = "" # .decode(encoding="utf-8")
 				row = self.cursor.fetchone()
 		except mysql.connector.Error as err:
 			print(err)

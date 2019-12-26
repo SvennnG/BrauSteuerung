@@ -1,7 +1,9 @@
-#!/usr/bin/python	 
 
 #from datetime import datetime
 import sys, logging, time, os, traceback
+print("Python version"), 
+print (sys.version)
+
 import TempGetter.TempGetter as TempGetter
 from LCDDriver.LCDGraphic import LCDGraphic
 from LCDDriver.LCDGraphic import States as LCDGraphicStates
@@ -32,17 +34,17 @@ if locale.getpreferredencoding().upper() != 'UTF-8':
 	
 if os.uname()[4].startswith("arm"):
 	# Raspberry PI -s (no pygame)
-	foldername = "/home/sven/BrauSteuerung"
+	foldername = "/home/gesper/BrauSteuerung"
 	tempSensor1 = "/sys/bus/w1/devices/28-0000074013a8/w1_slave"
 	tempSensor2 = "/sys/bus/w1/devices/28-0000073ec998/w1_slave"
 else:
 	# SVENTOP alway with -e (emulate fot tempsensor)
-	foldername = "/home/sven/Documents/BrauSteuerung" 
+	foldername = "/home/gesper/Documents/BrauSteuerung" 
 
 
 #profilepath = foldername + "/Configuration/Profile/"
 #globalprofilepath = foldername + "/Configuration/Global/"
-#logfile = '/home/sven/scripts/Maischen/log/Maischen.log'
+#logfile = '/home/gesper/scripts/Maischen/log/Maischen.log'
 logfile = foldername + "/log/Maischen.log"
 #defaultconfig =foldername + "/Configuration/default.conf"
 
